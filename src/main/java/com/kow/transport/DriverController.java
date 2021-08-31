@@ -4,8 +4,19 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
@@ -13,13 +24,18 @@ import org.bson.types.ObjectId;
 import java.lang.reflect.Array;
 import java.nio.file.DirectoryStream;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class DriverController {
     private MongoDatabase db;
     private MongoCollection drivers;
+
+    //data
     private ArrayList<Driver> queryResult = new ArrayList<>();
     private int viewIndex;
     private String lastQuery;
+    private ObservableList<Trip> trips = FXCollections.observableList(new ArrayList<>());
+
     @FXML
     private TextField nameField;
     @FXML
@@ -33,6 +49,19 @@ public class DriverController {
     private TextField currentIndexField;
     @FXML
     private TextField lastIndexField;
+
+    @FXML
+    private TableView table;
+    @FXML
+    private TableColumn dateCol;
+    @FXML
+    private TableColumn companyCol;
+    @FXML
+    private TableColumn originCol;
+    @FXML
+    private TableColumn destinationCol;
+    @FXML
+    private Button addTripButton;
 
     public MongoDatabase getDb() {
         return db;
@@ -64,7 +93,7 @@ public class DriverController {
         if (!queryResult.isEmpty()){
             displayDriver(queryResult.get(0));
             viewIndex = 0;
-            System.out.println(queryResult.size());
+            trips = FXCollections.observableList(queryResult.get(viewIndex).getTrips());
             updateCount();
         }
     }
@@ -73,6 +102,7 @@ public class DriverController {
         queryIC(lastQuery);
         if (!queryResult.isEmpty()){
             displayDriver(queryResult.get(viewIndex));
+            trips = FXCollections.observableList(queryResult.get(viewIndex).getTrips());
             updateCount();
         }
     }
@@ -92,31 +122,12 @@ public class DriverController {
     }
 
     @FXML
-    private void AddTestDrivers (){
-        Driver d1 = new Driver();
-        Driver d2 = new Driver();
-        Driver d3 = new Driver();
-        d1.setName("abu");
-        d1.setIc("0");
-        d1.setLicenseNumber("123");
-        d2.setName("ali");
-        d2.setIc("1");
-        d2.setLicenseNumber("1234");
-        d3.setName("akow");
-        d3.setIc("2");
-        d3.setLicenseNumber("1235");
-        drivers.insertOne(d1);
-        drivers.insertOne(d2);
-        drivers.insertOne(d3);
-
-    }
-
-    @FXML
     private void displayNext(){
         if (viewIndex+1<queryResult.size()){
             viewIndex += 1;
             updateCount();
             Driver next = queryResult.get(viewIndex);
+            trips = FXCollections.observableList(queryResult.get(viewIndex).getTrips());
             displayDriver(next);
         }
     }
@@ -127,13 +138,13 @@ public class DriverController {
             viewIndex -= 1;
             updateCount();
             Driver prev = queryResult.get(viewIndex);
+            trips = FXCollections.observableList(queryResult.get(viewIndex).getTrips());
             displayDriver(prev);
         }
     }
 
     private void updateCount(){
         currentIndexField.setText(Integer.toString(viewIndex+1));
-        System.out.println(queryResult.size());
         lastIndexField.setText(Integer.toString(queryResult.size()));
     }
 
@@ -153,8 +164,11 @@ public class DriverController {
     private void newDriver(){
         clearDisplay();
         Driver driver = new Driver();
+        driver.setName("name");
+        driver.setIc("ic");
+        driver.setLicenseNumber("license number");
         displayDriver(driver);
-        System.out.println(drivers.insertOne(driver));
+        drivers.insertOne(driver);
         queryResult = (ArrayList<Driver>) drivers.find(Filters.eq("_id",driver.getId())).into(new ArrayList());
         viewIndex = 0;
         updateCount();
@@ -162,7 +176,43 @@ public class DriverController {
 
     @FXML
     private void deleteDriver(){
+        if (queryResult.size()!=0) {
+            drivers.deleteOne(Filters.eq("_id", queryResult.get(viewIndex).getId()));
+            if (queryResult.size()==1) {
+                clearDisplay();
+                queryResult = new ArrayList<>();
+            } else if (viewIndex==queryResult.size()-1){
+                viewIndex-=1;
+                queryLastResult();
+            } else {
+                queryLastResult();
+            }
+        }
+    }
 
+    public void setupColumnProperties(){
+        dateCol.setCellFactory(new PropertyValueFactory<Trip, Date>("date"));
+        companyCol.setCellFactory(new PropertyValueFactory<Trip, String>("company"));
+        originCol.setCellFactory(new PropertyValueFactory<Trip,String>("origin"));
+        destinationCol.setCellFactory(new PropertyValueFactory<Trip,String>("destination"));
+        table.setItems(trips);
+    }
+
+    @FXML
+    private void addTrip() throws Exception {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AddTrip.fxml"));
+            Parent root = loader.load();
+            Stage newStage = new Stage();
+            Scene newScene = new Scene(root);
+            newStage.setScene(newScene);
+            AddTripController controller = loader.getController();
+//            controller.setup();
+            newStage.initModality(Modality.APPLICATION_MODAL);
+            newStage.showAndWait();
+        } catch (Exception e) {
+            System.out.println("failed to load window");
+        }
     }
 
 

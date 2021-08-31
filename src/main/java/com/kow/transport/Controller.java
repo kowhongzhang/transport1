@@ -55,7 +55,11 @@ public class Controller {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Driver.fxml"));
             root = loader.load();
             DriverController driverController = loader.getController();
+
+            //setup new controller
             driverController.setDb(db);
+            driverController.setupColumnProperties();
+
             scene = new Scene(root);
             stage.setScene(scene);
             stage.show();

@@ -41,19 +41,19 @@
             <Font size="16.0" />
          </font>
       </TextField>
-      <TableView layoutX="17.0" layoutY="193.0" prefHeight="424.0" prefWidth="788.0">
+      <TableView fx:id="table" layoutX="17.0" layoutY="193.0" prefHeight="424.0" prefWidth="788.0">
         <columns>
-          <TableColumn prefWidth="75.0" text="Date" />
-          <TableColumn minWidth="0.0" prefWidth="221.0" text="Origin" />
-            <TableColumn prefWidth="243.0" text="Destination" />
-            <TableColumn minWidth="0.0" prefWidth="248.0" text="Company" />
+          <TableColumn fx:id="dateCol" editable="false" prefWidth="75.0" text="Date" />
+          <TableColumn fx:id="originCol" editable="false" minWidth="0.0" prefWidth="221.0" text="Origin" />
+            <TableColumn fx:id="destinationCol" editable="false" prefWidth="243.0" text="Destination" />
+            <TableColumn fx:id="companyCol" editable="false" minWidth="0.0" prefWidth="248.0" text="Company" />
         </columns>
       </TableView>
       <ToolBar layoutX="7.0" prefHeight="40.0" prefWidth="208.0">
          <items>
             <Button mnemonicParsing="false" onAction="#newDriver" prefHeight="26.0" prefWidth="56.0" text="New" />
             <Button mnemonicParsing="false" onAction="#saveDriver" prefHeight="26.0" prefWidth="64.0" text="Save" />
-          <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="63.0" text="Delete" />
+          <Button mnemonicParsing="false" onAction="#deleteDriver" prefHeight="26.0" prefWidth="63.0" text="Delete" />
          </items>
       </ToolBar>
       <Button layoutX="758.0" layoutY="19.0" mnemonicParsing="false" onAction="#displayNext" text="Next" />
@@ -69,7 +69,6 @@
             <Font size="16.0" />
          </font>
       </TextField>
-      <Button layoutX="563.0" layoutY="135.0" mnemonicParsing="false" onAction="#AddTestDrivers" text="testadd" />
       <TextField fx:id="lastIndexField" editable="false" layoutX="764.0" layoutY="47.0" prefHeight="26.0" prefWidth="36.0" />
       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
       <Text layoutX="748.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/" wrappingWidth="16.835999965667725">
@@ -78,5 +77,6 @@
          </font>
       </Text>
       <TextField fx:id="currentIndexField" editable="false" layoutX="704.0" layoutY="47.0" onAction="#displayPrevious" prefHeight="26.0" prefWidth="36.0" />
+      <Button fx:id="addTripButton" layoutX="733.0" layoutY="158.0" mnemonicParsing="false" onAction="#addTrip" text="Add Trip" />
    </children>
 </AnchorPane>

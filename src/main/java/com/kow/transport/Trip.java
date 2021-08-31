@@ -2,11 +2,12 @@ package com.kow.transport;
 
 import org.bson.types.ObjectId;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Trip {
     private ObjectId id = new ObjectId();
-    private Date date = new Date();
+    private LocalDate date = LocalDate.MIN;
     private String company = "";
     private String origin = "";
     private String destination = "";
@@ -16,7 +17,7 @@ public class Trip {
 
     public ObjectId getId() { return id; }
 
-    public Date getDate(){
+    public LocalDate getDate(){
         return date;
     }
 
@@ -44,7 +45,7 @@ public class Trip {
         return gas;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -70,5 +71,9 @@ public class Trip {
 
     public void setWage(int wage) {
         this.wage = wage;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
     }
 }
