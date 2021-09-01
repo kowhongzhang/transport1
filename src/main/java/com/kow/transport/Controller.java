@@ -62,6 +62,7 @@ public class Controller {
 
             scene = new Scene(root);
             stage.setScene(scene);
+            stage.setTitle("Transport");
             stage.show();
         } catch (Exception e) {
             System.out.println("Connection failed");

@@ -226,6 +226,7 @@ public class DriverController {
                 addTripController.setDriverId(queryResult.get(viewIndex).getId());
                 addTripController.setDrivers(drivers);
                 newStage.setScene(newScene);
+                newStage.setTitle("New Trip");
                 newStage.initModality(Modality.APPLICATION_MODAL);
                 newStage.showAndWait();
                 queryLastResult();
