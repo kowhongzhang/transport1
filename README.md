@@ -4,6 +4,11 @@ To run the application do:
 ```
 mvn javafx:run
 ```
-![DriverPageExample](https://user-images.githubusercontent.com/70547997/131608289-62ac73da-5b51-4275-928f-33747670c11b.png)
-![AddTripExample](https://user-images.githubusercontent.com/70547997/131608292-f165d6e9-2304-4b86-b8e9-bc362fd6fb03.png)
+
+Examples:
+
+![DriverPageExample](https://user-images.githubusercontent.com/70547997/131608823-174d223b-5ebb-424c-b7ec-5e994cef4a25.png)
+
+![AddTripExample](https://user-images.githubusercontent.com/70547997/131608820-76ca9700-2eb6-422f-a2ef-f1514cddc499.png)
+
 
