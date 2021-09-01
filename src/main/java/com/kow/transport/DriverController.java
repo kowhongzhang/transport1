@@ -3,6 +3,7 @@ package com.kow.transport;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,10 +22,8 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
-import java.lang.reflect.Array;
-import java.nio.file.DirectoryStream;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class DriverController {
     private MongoDatabase db;
@@ -51,17 +50,25 @@ public class DriverController {
     private TextField lastIndexField;
 
     @FXML
-    private TableView table;
+    private TableView<Trip> table;
     @FXML
-    private TableColumn dateCol;
+    private TableColumn<Trip, LocalDate> dateCol;
     @FXML
-    private TableColumn companyCol;
+    private TableColumn<Trip,String> companyCol;
     @FXML
-    private TableColumn originCol;
+    private TableColumn<Trip,String> originCol;
     @FXML
-    private TableColumn destinationCol;
+    private TableColumn<Trip,String> destinationCol;
+    @FXML
+    private TableColumn<Trip,Integer> quoteCol;
+    @FXML
+    private TableColumn<Trip,Integer> gasCol;
+    @FXML
+    private TableColumn<Trip,Integer> wageCol;
     @FXML
     private Button addTripButton;
+    @FXML
+    private Button delTripButton;
 
     public MongoDatabase getDb() {
         return db;
@@ -94,6 +101,7 @@ public class DriverController {
             displayDriver(queryResult.get(0));
             viewIndex = 0;
             trips = FXCollections.observableList(queryResult.get(viewIndex).getTrips());
+            table.setItems(trips);
             updateCount();
         }
     }
@@ -103,6 +111,7 @@ public class DriverController {
         if (!queryResult.isEmpty()){
             displayDriver(queryResult.get(viewIndex));
             trips = FXCollections.observableList(queryResult.get(viewIndex).getTrips());
+            table.setItems(trips);
             updateCount();
         }
     }
@@ -128,6 +137,7 @@ public class DriverController {
             updateCount();
             Driver next = queryResult.get(viewIndex);
             trips = FXCollections.observableList(queryResult.get(viewIndex).getTrips());
+            table.setItems(trips);
             displayDriver(next);
         }
     }
@@ -139,6 +149,7 @@ public class DriverController {
             updateCount();
             Driver prev = queryResult.get(viewIndex);
             trips = FXCollections.observableList(queryResult.get(viewIndex).getTrips());
+            table.setItems(trips);
             displayDriver(prev);
         }
     }
@@ -171,6 +182,8 @@ public class DriverController {
         drivers.insertOne(driver);
         queryResult = (ArrayList<Driver>) drivers.find(Filters.eq("_id",driver.getId())).into(new ArrayList());
         viewIndex = 0;
+        trips = FXCollections.observableList(queryResult.get(viewIndex).getTrips());
+        table.setItems(trips);
         updateCount();
     }
 
@@ -191,29 +204,55 @@ public class DriverController {
     }
 
     public void setupColumnProperties(){
-        dateCol.setCellFactory(new PropertyValueFactory<Trip, Date>("date"));
-        companyCol.setCellFactory(new PropertyValueFactory<Trip, String>("company"));
-        originCol.setCellFactory(new PropertyValueFactory<Trip,String>("origin"));
-        destinationCol.setCellFactory(new PropertyValueFactory<Trip,String>("destination"));
+        dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
+        companyCol.setCellValueFactory(new PropertyValueFactory<>("company"));
+        originCol.setCellValueFactory(new PropertyValueFactory<>("origin"));
+        destinationCol.setCellValueFactory(new PropertyValueFactory<>("destination"));
+        quoteCol.setCellValueFactory(new PropertyValueFactory<>("quote"));
+        wageCol.setCellValueFactory(new PropertyValueFactory<>("wage"));
+        gasCol.setCellValueFactory(new PropertyValueFactory<>("gas"));
         table.setItems(trips);
     }
 
     @FXML
-    private void addTrip() throws Exception {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("AddTrip.fxml"));
-            Parent root = loader.load();
-            Stage newStage = new Stage();
-            Scene newScene = new Scene(root);
-            newStage.setScene(newScene);
-            AddTripController controller = loader.getController();
-//            controller.setup();
-            newStage.initModality(Modality.APPLICATION_MODAL);
-            newStage.showAndWait();
-        } catch (Exception e) {
-            System.out.println("failed to load window");
+    private void addTrip() {
+        if (queryResult.size()!=0) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("AddTrip.fxml"));
+                Parent root = loader.load();
+                Stage newStage = new Stage();
+                Scene newScene = new Scene(root);
+                AddTripController addTripController = loader.getController();
+                addTripController.setDriverId(queryResult.get(viewIndex).getId());
+                addTripController.setDrivers(drivers);
+                newStage.setScene(newScene);
+                newStage.initModality(Modality.APPLICATION_MODAL);
+                newStage.showAndWait();
+                queryLastResult();
+                trips = FXCollections.observableList(queryResult.get(viewIndex).getTrips());
+                table.setItems(trips);
+            } catch (Exception e) {
+                System.out.println("failed to load window");
+            }
         }
     }
+
+    @FXML
+    private void delTrip() {
+        if (queryResult.size()!=0 && table.getSelectionModel().getSelectedItem() != null) {
+            ObjectId id = table.getSelectionModel().getSelectedItem().getId();
+            System.out.println(id);
+            Bson pullUpdate = Updates.pull("trips", Filters.eq("_id",id));
+            UpdateOptions updateOption = new UpdateOptions();
+            updateOption.arrayFilters(new ArrayList<>());
+            drivers.updateMany(new Document(),pullUpdate, updateOption);
+            queryLastResult();
+            trips = FXCollections.observableList(queryResult.get(viewIndex).getTrips());
+            table.setItems(trips);
+        }
+    }
+
+
 
 
 

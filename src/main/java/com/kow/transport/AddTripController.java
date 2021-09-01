@@ -1,14 +1,14 @@
 package com.kow.transport;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
-import org.w3c.dom.Text;
-
-import java.time.LocalDate;
-import java.util.function.UnaryOperator;
+import javafx.stage.Stage;
+import org.bson.types.ObjectId;
 
 public class AddTripController {
     @FXML
@@ -27,6 +27,8 @@ public class AddTripController {
     private TextField gasField;
     @FXML
     private Button submitButton;
+    private ObjectId driverId;
+    private MongoCollection drivers;
 
     @FXML
     private void submit(){
@@ -43,23 +45,26 @@ public class AddTripController {
         if (destinationField.getText()!=null){
             trip.setDestination(destinationField.getText());
         }
+        if (quoteField.getText().matches("[0-9]*") && quoteField.getText()!="") {
+            trip.setQuote(Integer.parseInt(quoteField.getText()));
+        }
+        if (wageField.getText().matches("[0-9]*") && wageField.getText()!="") {
+            trip.setWage(Integer.parseInt(wageField.getText()));
+        }
+        if (gasField.getText().matches("[0-9]*") && gasField.getText()!="") {
+            trip.setGas(Integer.parseInt(gasField.getText()));
+        }
 
+        drivers.updateOne(Filters.eq("_id",driverId), Updates.push("trips",trip));
+        Stage currentStage = (Stage) submitButton.getScene().getWindow();
+        currentStage.close();
     }
 
-    public void setup(){
-        UnaryOperator<TextFormatter.Change> filter = change -> {
-            String text = change.getText();
+    public void setDriverId(ObjectId driverId) {
+        this.driverId = driverId;
+    }
 
-            if (text.matches("[0-9]*")) {
-                return change;
-            }
-
-            return null;
-        };
-
-        TextFormatter<String> textFormatter = new TextFormatter<>(filter);
-        quoteField.setTextFormatter(textFormatter);
-        gasField.setTextFormatter(textFormatter);
-        wageField.setTextFormatter(textFormatter);
+    public void setDrivers(MongoCollection drivers) {
+        this.drivers = drivers;
     }
 }

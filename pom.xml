@@ -115,7 +115,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.kow.transport/com.kow.transport.HelloApplication</mainClass>
+                            <mainClass>com.kow.transport/com.kow.transport.Main</mainClass>
                         </configuration>
                     </execution>
                 </executions>

@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class Trip {
     private ObjectId id = new ObjectId();
-    private LocalDate date = LocalDate.MIN;
+    private LocalDate date = LocalDate.now();
     private String company = "";
     private String origin = "";
     private String destination = "";

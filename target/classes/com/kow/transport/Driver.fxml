@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="644.0" prefWidth="827.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kow.transport.DriverController">
+<AnchorPane prefHeight="644.0" prefWidth="827.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.kow.transport.DriverController">
    <children>
       <Text layoutX="17.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:">
          <font>
@@ -43,33 +43,31 @@
       </TextField>
       <TableView fx:id="table" layoutX="17.0" layoutY="193.0" prefHeight="424.0" prefWidth="788.0">
         <columns>
-          <TableColumn fx:id="dateCol" editable="false" prefWidth="75.0" text="Date" />
-          <TableColumn fx:id="originCol" editable="false" minWidth="0.0" prefWidth="221.0" text="Origin" />
-            <TableColumn fx:id="destinationCol" editable="false" prefWidth="243.0" text="Destination" />
-            <TableColumn fx:id="companyCol" editable="false" minWidth="0.0" prefWidth="248.0" text="Company" />
+          <TableColumn fx:id="dateCol" editable="false" prefWidth="81.0" text="Date" />
+          <TableColumn fx:id="originCol" editable="false" minWidth="0.0" prefWidth="165.0" text="Origin" />
+            <TableColumn fx:id="destinationCol" editable="false" prefWidth="174.0" text="Destination" />
+            <TableColumn fx:id="companyCol" editable="false" minWidth="0.0" prefWidth="89.0" text="Company" />
+            <TableColumn fx:id="quoteCol" prefWidth="112.0" text="Quote" />
+            <TableColumn fx:id="gasCol" prefWidth="84.0" text="Gas" />
+            <TableColumn fx:id="wageCol" prefWidth="82.0" text="Wage" />
         </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
       </TableView>
-      <ToolBar layoutX="7.0" prefHeight="40.0" prefWidth="208.0">
-         <items>
-            <Button mnemonicParsing="false" onAction="#newDriver" prefHeight="26.0" prefWidth="56.0" text="New" />
-            <Button mnemonicParsing="false" onAction="#saveDriver" prefHeight="26.0" prefWidth="64.0" text="Save" />
-          <Button mnemonicParsing="false" onAction="#deleteDriver" prefHeight="26.0" prefWidth="63.0" text="Delete" />
-         </items>
-      </ToolBar>
-      <Button layoutX="758.0" layoutY="19.0" mnemonicParsing="false" onAction="#displayNext" text="Next" />
       <Button layoutX="699.0" layoutY="19.0" mnemonicParsing="false" onAction="#displayPrevious" text="Prev" />
+      <Button layoutX="758.0" layoutY="19.0" mnemonicParsing="false" onAction="#displayNext" text="Next" />
+      <TextField fx:id="icQueryField" layoutX="519.0" layoutY="74.0" prefHeight="32.0" prefWidth="284.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </TextField>
       <Button fx:id="queryButton" layoutX="745.0" layoutY="122.0" mnemonicParsing="false" onAction="#queryAndDisplay" prefHeight="26.0" prefWidth="60.0" text="Find" />
       <Text layoutX="522.0" layoutY="68.0" strokeType="OUTSIDE" strokeWidth="0.0" text="IC:">
          <font>
             <Font size="20.0" />
          </font>
       </Text>
-      <TextField fx:id="icQueryField" layoutX="519.0" layoutY="74.0" prefHeight="32.0" prefWidth="284.0">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </TextField>
-      <TextField fx:id="lastIndexField" editable="false" layoutX="764.0" layoutY="47.0" prefHeight="26.0" prefWidth="36.0" />
       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
       <Text layoutX="748.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/" wrappingWidth="16.835999965667725">
          <font>
@@ -77,6 +75,15 @@
          </font>
       </Text>
       <TextField fx:id="currentIndexField" editable="false" layoutX="704.0" layoutY="47.0" onAction="#displayPrevious" prefHeight="26.0" prefWidth="36.0" />
+      <TextField fx:id="lastIndexField" editable="false" layoutX="764.0" layoutY="47.0" prefHeight="26.0" prefWidth="36.0" />
+      <Button fx:id="addTripButton1" layoutX="656.0" layoutY="158.0" mnemonicParsing="false" onAction="#delTrip" text="Del Trip" />
       <Button fx:id="addTripButton" layoutX="733.0" layoutY="158.0" mnemonicParsing="false" onAction="#addTrip" text="Add Trip" />
+      <ToolBar layoutX="7.0" prefHeight="40.0" prefWidth="208.0">
+         <items>
+            <Button mnemonicParsing="false" onAction="#newDriver" prefHeight="26.0" prefWidth="56.0" text="New" />
+            <Button mnemonicParsing="false" onAction="#saveDriver" prefHeight="26.0" prefWidth="64.0" text="Save" />
+          <Button mnemonicParsing="false" onAction="#deleteDriver" prefHeight="26.0" prefWidth="63.0" text="Delete" />
+         </items>
+      </ToolBar>
    </children>
 </AnchorPane>
